@@ -1,0 +1,51 @@
+import pandas as pd
+from bokeh.plotting import figure, output_file, show,output_notebook
+output_notebook()
+
+
+#makes dashboard
+def make_dashboard(x, gdp_change, unemployment, title, file_name):
+    output_file(file_name)
+    p = figure(title=title, x_axis_label='year', y_axis_label='%')
+    p.line(x.squeeze(), gdp_change.squeeze(), color="firebrick", line_width=4, legend="% GDP change")
+    p.line(x.squeeze(), unemployment.squeeze(), line_width=4, legend="% unemployed")
+    show(p)
+
+#CSV data for GDP and unemployment
+links={'GDP':'https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/PY0101EN/projects/coursera_project/clean_gdp.csv',\
+       'unemployment':'https://s3-api.us-geo.objectstorage.softlayer.net/cf-courses-data/CognitiveClass/PY0101EN/projects/coursera_project/clean_unemployment.csv'}    
+
+#Create dataframe
+df=pd.read_csv(links['GDP'])
+
+#first 5 lines
+df.head()
+
+#unemployment dataframe
+df2=pd.read_csv(links['unemployment'])
+
+#first 5 lines
+df2.head()
+
+#showing when unemployment was greater than 8.5%
+df3=df2[df2['unemployment']> 8.5]
+print(df3)
+
+#new dataframe with column date from GDP data
+x =df[['date']]
+
+#new dataframe showing gdp change
+gdp_change=df[['change-current']]
+
+#new dataframe with unemployment
+unemployment=df2[['unemployment']]
+
+#title
+title = ('Dashboard of US Economic Data')
+
+#file name
+file_name = 'index.html'
+
+#makeing dashboard
+make_dashboard(x=x, gdp_change=gdp_change, unemployment=unemployment, title=title, file_name=file_name)
+
